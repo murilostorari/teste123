@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cerum Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .animate-fade-in { animation: fadeIn 0.15s ease-out forwards; }
+      .animate-fade-out { animation: fadeOut 0.15s ease-in forwards; }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      @keyframes fadeOut {
+        from { opacity: 1; transform: scale(1); }
+        to { opacity: 0; transform: scale(0.95); }
+      }
+
+      .animate-slideInUp { animation: slideInUp 0.3s ease-out forwards; }
+      @keyframes slideInUp {
+        from {
+          transform: translate(-50%, 20px);
+          opacity: 0;
+        }
+        to {
+          transform: translate(-50%, 0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeInRow {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .animate-fade-in-row {
+        animation: fadeInRow 0.4s ease-out forwards;
+      }
+
+      .table-cell-transition {
+          transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease-in-out;
+          white-space: nowrap;
+          overflow: hidden;
+      }
+      .table-cell-hidden {
+          max-width: 0;
+          min-width: 0;
+          padding-left: 0;
+          padding-right: 0;
+          opacity: 0;
+          border-width: 0;
+      }
+
+      .pattern-bg {
+          background-color: #F3F4F6; /* bg-gray-100 */
+          background-image: repeating-linear-gradient(to right, #E5E7EB, #E5E7EB 1px, transparent 1px, transparent 5px); /* gray-200 lines */
+      }
+      .dark .pattern-bg {
+          background-color: #374151; /* dark-subtle */
+          background-image: repeating-linear-gradient(to right, #4B5563, #4B5563 1px, transparent 1px, transparent 5px); /* gray-600 lines */
+      }
+      
+      .recharts-tooltip-wrapper {
+          transition-property: opacity !important;
+          transition-duration: 0.2s !important;
+          transition-timing-function: ease-in-out !important;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #d1d5db; /* gray-300 */
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #9ca3af; /* gray-400 */
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background-color: #4b5563; /* gray-600 */
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background-color: #6b7280; /* gray-500 */
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          container: {
+            center: true,
+            padding: '1rem',
+          },
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              // Light Theme
+              background: '#FFFFFF',
+              surface: '#FFFFFF',
+              primary: '#1c8057', 
+              'primary-fg': '#FFFFFF',
+              'primary-light': 'rgba(59, 130, 137, 0.1)',
+              'primary-bg': 'rgba(59, 130, 137, 0.1)',
+              secondary: '#F59E0B',
+              'search-bg': '#3a906c',
+              heading: '#1F2937',
+              'text-body': '#6B7280',
+              border: '#F3F4F6',
+              'brand-green': '#1c8057',
+              'brand-red': '#EF4444',
+              
+              'chart-pink': '#EC4899',
+              'chart-teal': '#14B8A6',
+              'chart-yellow': '#F59E0B',
+              'chart-blue': '#3B82F6',
+
+              'chart-bar-paid': '#3B82F6',
+              'chart-bar-checkout': '#60A5FA',
+              'chart-bar-bg': '#F0FDF4',
+
+              // Dark Mode (Neutral Grays)
+              'dark-background': '#18181B',
+              'dark-surface': '#18181B',
+              'dark-border': '#24252b',
+              'dark-text-heading': '#f0f0f0',
+              'dark-text-body': '#A1A1AA',
+              'dark-subtle': '#24252b',
+              'dark-hover-bg': '#24252b',
+              'dark-active-bg': '#24252b',
+
+
+              'dark-chart-pink': '#F472B6',
+              'dark-chart-teal': '#2DD4BF',
+              'dark-chart-yellow': '#FACC15',
+              'dark-chart-blue': '#60A5FA',
+              'dark-chart-bar-paid': '#3B82F6',
+              'dark-chart-bar-checkout': '#60A5FA',
+              'dark-chart-bar-bg': '#3F3F46',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "recharts": "https://aistudiocdn.com/recharts@^3.3.0",
+    "vite": "https://aistudiocdn.com/vite@^7.1.12",
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-background dark:bg-dark-background">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
